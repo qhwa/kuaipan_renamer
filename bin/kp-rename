@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require_relative '../lib/kuaipan_renamer'
+
+KuaipanRenamer.rename_recursively( ARGV[0] || Dir.pwd )
