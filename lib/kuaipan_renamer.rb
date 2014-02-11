@@ -4,16 +4,17 @@ require "shellwords"
 
 module KuaipanRenamer
 
-  def self.rename_recursively( root )
-    Walker.new( root ).rename_recursively
+  def self.rename_recursively( root, opts={} )
+    Walker.new( root, opts ).rename_recursively
   end
 
   class Walker
 
     attr_reader :root
     
-    def initialize( root )
+    def initialize( root, dry_run: false )
       @root = root
+      @dry_run = dry_run
     end
 
     def rename_recursively
@@ -41,7 +42,9 @@ module KuaipanRenamer
       unless base == new_name
         fullpath = File.join dir, new_name
         puts "#{file.ljust(50).red} => #{fullpath.green}"
-        File.rename file, fullpath
+        unless @dry_run
+          File.rename file, fullpath
+        end
       end
     end
 

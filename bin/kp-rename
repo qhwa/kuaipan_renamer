@@ -1,4 +1,14 @@
 #!/usr/bin/env ruby
 require_relative '../lib/kuaipan_renamer'
+require 'optparse'
 
-KuaipanRenamer.rename_recursively( ARGV[0] || Dir.pwd )
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: kp-rename [options] [target]"
+
+  opts.on("-d", "--dry-run", "just check, will not really rename") do |d|
+    options[:dry_run] = d
+  end
+end.parse!
+
+KuaipanRenamer.rename_recursively( ARGV[0] || Dir.pwd, options )
