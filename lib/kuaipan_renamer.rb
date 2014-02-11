@@ -1,6 +1,7 @@
 require_relative "kuaipan_renamer/version"
 require "colored"
 require "shellwords"
+require "logger"
 
 module KuaipanRenamer
 
@@ -15,6 +16,7 @@ module KuaipanRenamer
     def initialize( root, dry_run: false )
       @root = root
       @dry_run = dry_run
+      @err_log = Logger.new(STDERR)
     end
 
     def rename_recursively
@@ -43,7 +45,12 @@ module KuaipanRenamer
         fullpath = File.join dir, new_name
         puts "#{file.ljust(50).red} => #{fullpath.green}"
         unless @dry_run
-          File.rename file, fullpath
+          begin
+            File.rename file, fullpath
+          rescue => e
+            @err_log.error "Error renaming #{file} to #{fullpath}".red.bold
+            @err_log.error "  - " << e.message
+          end
         end
       end
     end
